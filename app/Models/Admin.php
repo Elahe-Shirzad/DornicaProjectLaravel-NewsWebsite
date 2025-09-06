@@ -12,9 +12,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class User
+ * Class Admin
  * 
  * @property int $id
+ * @property int $admin_rolel_id
  * @property string $first_name
  * @property string $last_name
  * @property string $national_code
@@ -24,33 +25,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $avatar_file_id
  * @property string $user_name
  * @property string $password
- * @property int|null $province_id
- * @property int|null $city_id
- * @property int $military_service_status
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property string|null $deleted_at
  * @property int $status
  * 
+ * @property AdminRole $adminRole
  * @property File|null $file
- * @property City|null $city
- * @property Collection|Comment[] $comments
- * @property Collection|SiteView[] $siteViews
+ * @property Log|null $log
+ * @property Collection|News[] $news
  *
  * @package App\Models
  */
-class User extends Model
+class Admin extends Model
 {
 	use SoftDeletes;
-	protected $table = 'users';
+	protected $table = 'admins';
 	public static $snakeAttributes = false;
 
 	protected $casts = [
+		'admin_rolel_id' => 'int',
 		'jender' => 'int',
 		'avatar_file_id' => 'int',
-		'province_id' => 'int',
-		'city_id' => 'int',
-		'military_service_status' => 'int',
 		'status' => 'int'
 	];
 
@@ -59,6 +55,7 @@ class User extends Model
 	];
 
 	protected $fillable = [
+		'admin_rolel_id',
 		'first_name',
 		'last_name',
 		'national_code',
@@ -68,29 +65,26 @@ class User extends Model
 		'avatar_file_id',
 		'user_name',
 		'password',
-		'province_id',
-		'city_id',
-		'military_service_status',
 		'status'
 	];
+
+	public function adminRole()
+	{
+		return $this->belongsTo(AdminRole::class, 'admin_rolel_id');
+	}
 
 	public function file()
 	{
 		return $this->belongsTo(File::class, 'avatar_file_id');
 	}
 
-	public function city()
+	public function log()
 	{
-		return $this->belongsTo(City::class, 'province_id');
+		return $this->hasOne(Log::class);
 	}
 
-	public function comments()
+	public function news()
 	{
-		return $this->hasMany(Comment::class);
-	}
-
-	public function siteViews()
-	{
-		return $this->hasMany(SiteView::class);
+		return $this->hasMany(News::class);
 	}
 }
