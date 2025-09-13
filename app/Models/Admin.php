@@ -15,15 +15,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * Class Admin
  * 
  * @property int $id
- * @property int $admin_rolel_id
+ * @property int $admin_role_id
  * @property string $first_name
  * @property string $last_name
  * @property string $national_code
- * @property int $jender
+ * @property int $gender
  * @property string $mobile
  * @property string $email
  * @property int|null $avatar_file_id
- * @property string $user_name
+ * @property string $username
  * @property string $password
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * 
  * @property AdminRole $adminRole
  * @property File|null $file
+ * @property Collection|Comment[] $comments
  * @property Log|null $log
  * @property Collection|News[] $news
  *
@@ -44,8 +45,8 @@ class Admin extends Model
 	public static $snakeAttributes = false;
 
 	protected $casts = [
-		'admin_rolel_id' => 'int',
-		'jender' => 'int',
+		'admin_role_id' => 'int',
+		'gender' => 'int',
 		'avatar_file_id' => 'int',
 		'status' => 'int'
 	];
@@ -55,27 +56,32 @@ class Admin extends Model
 	];
 
 	protected $fillable = [
-		'admin_rolel_id',
+		'admin_role_id',
 		'first_name',
 		'last_name',
 		'national_code',
-		'jender',
+		'gender',
 		'mobile',
 		'email',
 		'avatar_file_id',
-		'user_name',
+		'username',
 		'password',
 		'status'
 	];
 
 	public function adminRole()
 	{
-		return $this->belongsTo(AdminRole::class, 'admin_rolel_id');
+		return $this->belongsTo(AdminRole::class);
 	}
 
 	public function file()
 	{
 		return $this->belongsTo(File::class, 'avatar_file_id');
+	}
+
+	public function comments()
+	{
+		return $this->hasMany(Comment::class);
 	}
 
 	public function log()
